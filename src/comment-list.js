@@ -1,15 +1,12 @@
 import React, { useState, useEffect } from "react";
 import { collection, query, onSnapshot, orderBy } from "firebase/firestore";
-import { db } from "./firebase"; // Ensure this matches your firebase.js file path
+import { db } from "./firebase";
 
 const CommentList = () => {
   const [comments, setComments] = useState([]);
 
   useEffect(() => {
-    // Reference the Firestore collection
     const q = query(collection(db, "comments"), orderBy("timestamp", "desc"));
-
-    // Listen to real-time updates
     const unsubscribe = onSnapshot(q, (snapshot) => {
       const fetchedComments = snapshot.docs.map((doc) => ({
         id: doc.id,
@@ -18,7 +15,7 @@ const CommentList = () => {
       setComments(fetchedComments);
     });
 
-    return () => unsubscribe(); // Cleanup the listener on unmount
+    return () => unsubscribe();
   }, []);
 
   return (
@@ -37,4 +34,5 @@ const CommentList = () => {
   );
 };
 
-export default CommentList;
+export default CommentList; // Ensure the default export
+
