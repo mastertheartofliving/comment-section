@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import { collection, addDoc, serverTimestamp } from "firebase/firestore";
 import { db } from "./firebase";
+import "./comment-form.css"; // Importing the valid CSS file
 
 const CommentForm = () => {
   const [name, setName] = useState("");
@@ -24,24 +25,26 @@ const CommentForm = () => {
   };
 
   return (
-    <div>
-      <h2>Leave a Comment</h2>
-      <form onSubmit={handleSubmit}>
+    <div className="comment-form-container">
+      <h2 className="form-header">Leave a Comment</h2>
+      <form onSubmit={handleSubmit} className="comment-form">
         <input
           type="text"
           placeholder="Your Name"
           value={name}
           onChange={(e) => setName(e.target.value)}
+          className="input-field"
         />
         <textarea
           placeholder="Your Comment"
           value={message}
           onChange={(e) => setMessage(e.target.value)}
-        />
-        <button type="submit">Post Comment</button>
+          className="textarea-field"
+        ></textarea>
+        <button type="submit" className="submit-button">Post Comment</button>
       </form>
     </div>
   );
 };
 
-export default CommentForm; // Ensure the default export
+export default CommentForm;

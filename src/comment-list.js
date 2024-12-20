@@ -1,38 +1,50 @@
-import React, { useState, useEffect } from "react";
-import { collection, query, onSnapshot, orderBy } from "firebase/firestore";
+import React, { useState } from "react";
+import { collection, addDoc, serverTimestamp } from "firebase/firestore";
 import { db } from "./firebase";
+import "./comment-form.css"; // Importing CSS for modern styling
 
-const CommentList = () => {
-  const [comments, setComments] = useState([]);
+const CommentForm = () => {
+  const [name, setName] = useState("");
+  const [message, setMessage] = useState("");
 
-  useEffect(() => {
-    const q = query(collection(db, "comments"), orderBy("timestamp", "desc"));
-    const unsubscribe = onSnapshot(q, (snapshot) => {
-      const fetchedComments = snapshot.docs.map((doc) => ({
-        id: doc.id,
-        ...doc.data(),
-      }));
-      setComments(fetchedComments);
-    });
-
-    return () => unsubscribe();
-  }, []);
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    if (name && message) {
+      try {
+        await addDoc(collection(db, "comments"), {
+          name: name,
+          message: message,
+          timestamp: serverTimestamp(),
+        });
+        setName("");
+        setMessage("");
+      } catch (error) {
+        console.error("Error adding comment: ", error);
+      }
+    }
+  };
 
   return (
-    <div>
-      <h2>Comments</h2>
-      <ul>
-        {comments.map((comment) => (
-          <li key={comment.id}>
-            <strong>{comment.name}</strong>: {comment.message}
-            <br />
-            <small>{new Date(comment.timestamp?.toDate()).toLocaleString()}</small>
-          </li>
-        ))}
-      </ul>
+    <div className="comment-form-container">
+      <h2 className="form-header">Leave a Comment</h2>
+      <form onSubmit={handleSubmit} className="comment-form">
+        <input
+          type="text"
+          placeholder="Your Name"
+          value={name}
+          onChange={(e) => setName(e.target.value)}
+          className="input-field"
+        />
+        <textarea
+          placeholder="Your Comment"
+          value={message}
+          onChange={(e) => setMessage(e.target.value)}
+          className="textarea-field"
+        ></textarea>
+        <button type="submit" className="submit-button">Post Comment</button>
+      </form>
     </div>
   );
 };
 
-export default CommentList; // Ensure the default export
-
+export default CommentForm;
