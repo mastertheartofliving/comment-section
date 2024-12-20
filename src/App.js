@@ -1,13 +1,11 @@
 import React from "react";
-import CommentForm from "./comment-form";
-import CommentList from "./comment-list";
+import Chatroom from "./chatroom";
 
 function App() {
   return (
     <div className="app-container">
-      <h1>Modern Comment Section</h1>
-      <CommentForm />
-      <CommentList />
+      <h1>Chatroom Comment Section</h1>
+      <Chatroom itemId="example-item-id" />
     </div>
   );
 }
